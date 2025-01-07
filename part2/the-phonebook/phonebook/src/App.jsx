@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+
+import contactService from './services/contacts'
 
 import PersonForm from './components/PersonForm'
 import Contacts from './components/Contacts'
@@ -12,9 +13,8 @@ const App = () => {
   const [newPhone, setNewPhone] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(res => setPersons(res.data))
+    contactService.getAll()
+      .then(res => setPersons(res))
   }, [])
 
   const handleFilterInput = (event) => setNameFilter(event.target.value)
@@ -33,9 +33,12 @@ const App = () => {
       return
     }
 
-    setPersons([...persons, {name: newName, phone: newPhone, id: persons.length + 1}])
-    setNewName('')
-    setNewPhone('')
+    contactService.create({name: newName, phone: newPhone})
+      .then(res => {
+        setPersons([...persons, res])
+        setNewName('')
+        setNewPhone('')
+      })
   }
 
   const filteredPersons = nameFilter 
