@@ -4,6 +4,7 @@ import contactService from './services/contacts'
 
 import PersonForm from './components/PersonForm'
 import Contacts from './components/Contacts'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
@@ -11,6 +12,7 @@ const App = () => {
   const [nameFilter, setNameFilter] = useState('')
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
+  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     contactService.getAll()
@@ -37,6 +39,7 @@ const App = () => {
           if (window.confirm(`${newPerson.name} is already added to phonebook, replace the old number with a new one?`)) {
             contactService.update(personFound.id, newPerson)
               .then(res => {
+                showNotification(`${res.name} number updated`)
                 contactService.getAll()
                   .then(res => {
                     setPersons(res)
@@ -51,6 +54,7 @@ const App = () => {
     
         contactService.create(newPerson)
           .then(res => {
+            showNotification(`Added ${res.name}`)
             setPersons([...persons, res])
             setNewName('')
             setNewPhone('')
@@ -65,6 +69,13 @@ const App = () => {
     }
   }
 
+  const showNotification = message => {
+    setMessage(message)
+    setTimeout(() => {
+      setMessage(null)
+    }, 3000);
+  }
+
   const filteredPersons = nameFilter 
     ? persons.filter(person => person.name.toLowerCase().includes(nameFilter.toLowerCase())) 
     : persons
@@ -72,6 +83,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message}/>
       <div>
           filter shown with: <input value={nameFilter} onChange={handleFilterInput}/>
       </div>
