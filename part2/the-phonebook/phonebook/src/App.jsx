@@ -13,6 +13,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
   const [message, setMessage] = useState(null)
+  const [messageType, setMessageType] = useState(null)
 
   useEffect(() => {
     contactService.getAll()
@@ -28,50 +29,54 @@ const App = () => {
   const handleFormSubmit = (event) => {
     event.preventDefault()
     
-    contactService.getAll()
-      .then(res => {
-        setPersons(res)
-         
-        const newPerson = {name: newName, number: newPhone}
-        const personFound = persons.find(p => p.name === newPerson.name)
+    const newPerson = {name: newName, number: newPhone}
+    const personFound = persons.find(p => p.name === newPerson.name)
 
-        if (personFound) {
-          if (window.confirm(`${newPerson.name} is already added to phonebook, replace the old number with a new one?`)) {
-            contactService.update(personFound.id, newPerson)
-              .then(res => {
-                showNotification(`${res.name} number updated`)
-                contactService.getAll()
-                  .then(res => {
-                    setPersons(res)
-                    setNewName('')
-                    setNewPhone('')
-                  })
-              })
-          }
-
-          return
-        }
-    
-        contactService.create(newPerson)
+    if (personFound) {
+      if (window.confirm(`${newPerson.name} is already added to phonebook, replace the old number with a new one?`)) {
+        contactService.update(personFound.id, newPerson)
           .then(res => {
-            showNotification(`Added ${res.name}`)
-            setPersons([...persons, res])
+            showNotification(`${res.name} number updated`, 'success')
+            setPersons(persons.map(p => p.id === res.id ? res : p))
             setNewName('')
             setNewPhone('')
           })
+          .catch(error => {
+            showNotification(`Information on ${newPerson.name} has already been removed from server`, 'failure')
+            contactService.getAll()
+              .then(res => setPersons(res))
+          })
+      }
+      return
+    }
+
+    contactService.create(newPerson)
+      .then(res => {
+        showNotification(`Added ${res.name}`, 'success')
+        setPersons([...persons, res])
+        setNewName('')
+        setNewPhone('')
       })
   }
 
   const handleRemove = id => {
-    if (window.confirm(`Delete ${persons.find(p => p.id === id).name}?`)) {
+    const target = persons.find(p => p.id === id)
+    if (window.confirm(`Delete ${target.name}?`)) {
       contactService.remove(id)
         .then(res => setPersons(persons.filter(p => p.id != res.id)))
+        .catch(error => {
+          showNotification(`Information on ${target.name} has already been removed from server`, 'failure')
+          contactService.getAll()
+              .then(res => setPersons(res))
+        })
     }
   }
 
-  const showNotification = message => {
+  const showNotification = (message, type) => {
+    setMessageType(type)
     setMessage(message)
     setTimeout(() => {
+      setMessageType(null)
       setMessage(null)
     }, 3000);
   }
@@ -83,7 +88,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={message}/>
+      <Notification message={message} type={messageType}/>
       <div>
           filter shown with: <input value={nameFilter} onChange={handleFilterInput}/>
       </div>
