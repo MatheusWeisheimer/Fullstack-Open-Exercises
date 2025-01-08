@@ -13,7 +13,12 @@ const getAll = () => {
 
 const create = newContact => {
     const promise = axios.post(baseUrl, newContact)
-    return promise.then(res => res.data)
+    return extractData(promise)
 }
 
-export default { getAll, create }
+const remove = id => {
+    const promise = axios.delete(`${baseUrl}/${id}`)
+    return extractData(promise)
+}
+
+export default { getAll, create, remove }

@@ -33,12 +33,19 @@ const App = () => {
       return
     }
 
-    contactService.create({name: newName, phone: newPhone})
+    contactService.create({name: newName, number: newPhone})
       .then(res => {
         setPersons([...persons, res])
         setNewName('')
         setNewPhone('')
       })
+  }
+
+  const handleRemove = id => {
+    if (window.confirm(`Delete ${persons.find(p => p.id === id).name}?`)) {
+      contactService.remove(id)
+        .then(res => setPersons(persons.filter(p => p.id != res.id)))
+    }
   }
 
   const filteredPersons = nameFilter 
@@ -60,7 +67,7 @@ const App = () => {
         ]}
       />
       <h2>Numbers</h2>
-      <Contacts persons={filteredPersons}/>
+      <Contacts persons={filteredPersons} handleRemove={handleRemove}/>
     </div>
   )
 }
