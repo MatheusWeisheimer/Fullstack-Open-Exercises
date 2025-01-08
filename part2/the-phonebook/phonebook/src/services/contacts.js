@@ -21,4 +21,9 @@ const remove = id => {
     return extractData(promise)
 }
 
-export default { getAll, create, remove }
+const update = (id, newContact) => {
+    const promise = axios.put(`${baseUrl}/${id}`, newContact)
+    return extractData(promise)
+}
+
+export default { getAll, create, remove, update }

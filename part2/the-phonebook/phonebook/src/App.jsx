@@ -25,19 +25,36 @@ const App = () => {
 
   const handleFormSubmit = (event) => {
     event.preventDefault()
-
-    if (persons.some(person => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`)
-      setNewName('')
-      setNewPhone('')
-      return
-    }
-
-    contactService.create({name: newName, number: newPhone})
+    
+    contactService.getAll()
       .then(res => {
-        setPersons([...persons, res])
-        setNewName('')
-        setNewPhone('')
+        setPersons(res)
+         
+        const newPerson = {name: newName, number: newPhone}
+        const personFound = persons.find(p => p.name === newPerson.name)
+
+        if (personFound) {
+          if (window.confirm(`${newPerson.name} is already added to phonebook, replace the old number with a new one?`)) {
+            contactService.update(personFound.id, newPerson)
+              .then(res => {
+                contactService.getAll()
+                  .then(res => {
+                    setPersons(res)
+                    setNewName('')
+                    setNewPhone('')
+                  })
+              })
+          }
+
+          return
+        }
+    
+        contactService.create(newPerson)
+          .then(res => {
+            setPersons([...persons, res])
+            setNewName('')
+            setNewPhone('')
+          })
       })
   }
 
