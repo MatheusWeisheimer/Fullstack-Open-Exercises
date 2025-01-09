@@ -1,3 +1,4 @@
+import Country from "./Country"
 import FullCountry from "./FullCountry"
 
 const Countries = ({countries}) => {
@@ -6,7 +7,7 @@ const Countries = ({countries}) => {
     }
 
     const countriesJsx = countries.length > 1
-    ? countries.map(c => <li key={c.name.common}>{c.name.common}</li>)
+    ? countries.map(c => <Country key={c.name.common} country={c}/>)
     : <FullCountry country={countries[0]}/>
 
 
