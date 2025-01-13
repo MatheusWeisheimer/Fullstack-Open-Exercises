@@ -8,7 +8,6 @@ import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
-
   const [nameFilter, setNameFilter] = useState('')
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
@@ -63,7 +62,7 @@ const App = () => {
     const target = persons.find(p => p.id === id)
     if (window.confirm(`Delete ${target.name}?`)) {
       contactService.remove(id)
-        .then(res => setPersons(persons.filter(p => p.id != res.id)))
+        .then(res => setPersons(persons.filter(p => p.id != id)))
         .catch(error => {
           showNotification(`Information on ${target.name} has already been removed from server`, 'failure')
           contactService.getAll()
