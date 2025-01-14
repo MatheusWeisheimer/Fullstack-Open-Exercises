@@ -56,6 +56,9 @@ const App = () => {
         setNewName('')
         setNewPhone('')
       })
+      .catch(error => {
+        showNotification(error.response.data.error, 'failure')
+      })
   }
 
   const handleRemove = id => {
