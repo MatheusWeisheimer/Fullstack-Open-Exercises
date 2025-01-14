@@ -41,7 +41,7 @@ const App = () => {
             setNewPhone('')
           })
           .catch(error => {
-            showNotification(`Information on ${newPerson.name} has already been removed from server`, 'failure')
+            showNotification(error.response.data.error, 'failure')
             contactService.getAll()
               .then(res => setPersons(res))
           })
