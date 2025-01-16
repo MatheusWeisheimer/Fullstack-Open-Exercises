@@ -52,3 +52,17 @@ describe('totalLikes', () => {
     assert.strictEqual(listHelper.totalLikes(blogs), 24)
   })
 })
+
+describe('favoriteBlog', () => {
+  test('of empty list is undefined', () => {
+    assert.strictEqual(listHelper.favoriteBlog([]), undefined)
+  })
+
+  test('of list of length 1 is calculated right', () => {
+    assert.strictEqual(listHelper.favoriteBlog([blogs[0]]), blogs[0])
+  })
+
+  test('of list of length 3 is calculated right', () => {
+    assert.strictEqual(listHelper.favoriteBlog(blogs), blogs[2])
+  })
+})
