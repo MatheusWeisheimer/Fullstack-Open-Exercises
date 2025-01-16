@@ -59,11 +59,11 @@ describe('favoriteBlog', () => {
   })
 
   test('of list of length 1 is calculated right', () => {
-    assert.strictEqual(listHelper.favoriteBlog([blogs[0]]), blogs[0])
+    assert.deepStrictEqual(listHelper.favoriteBlog([blogs[0]]), blogs[0])
   })
 
   test('of list of length 3 is calculated right', () => {
-    assert.strictEqual(listHelper.favoriteBlog(blogs), blogs[2])
+    assert.deepStrictEqual(listHelper.favoriteBlog(blogs), blogs[2])
   })
 })
 
@@ -78,5 +78,20 @@ describe('mostBlogs', () => {
 
   test('of list of length 3 is calculated right', () => {
     assert.deepStrictEqual(listHelper.mostBlogs(blogs), {author: 'Edsger W. Dijkstra', blogs: 2})
+  })
+})
+
+
+describe('mostLikes', () => {
+  test('of empty list is undefined', () => {
+    assert.strictEqual(listHelper.mostLikes([]), undefined)
+  })
+
+  test('of list of length 1 is calculated right', () => {
+    assert.deepStrictEqual(listHelper.mostLikes([blogs[0]]), {author: 'Michael Chan', likes: 7})
+  })
+
+  test('of list of length 3 is calculated right', () => {
+    assert.deepStrictEqual(listHelper.mostLikes(blogs), {author: 'Edsger W. Dijkstra', likes: 17})
   })
 })
