@@ -66,3 +66,17 @@ describe('favoriteBlog', () => {
     assert.strictEqual(listHelper.favoriteBlog(blogs), blogs[2])
   })
 })
+
+describe('mostBlogs', () => {
+  test('of empty list is undefined', () => {
+    assert.strictEqual(listHelper.mostBlogs([]), undefined)
+  })
+
+  test('of list of length 1 is calculated right', () => {
+    assert.deepStrictEqual(listHelper.mostBlogs([blogs[0]]), {author: 'Michael Chan', blogs: 1})
+  })
+
+  test('of list of length 3 is calculated right', () => {
+    assert.deepStrictEqual(listHelper.mostBlogs(blogs), {author: 'Edsger W. Dijkstra', blogs: 2})
+  })
+})
