@@ -33,16 +33,26 @@ test('unique identifier of posts is id, not _id', async () => {
 })
 
 test('post requests successfully creates a new blog', async () => {
-    await api
+    const postResponse = await api
         .post('/api/blogs')
         .send(helper.dummyBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
 
-    const response = await api.get('/api/blogs')
+    const getResponse = await api.get('/api/blogs')
     
-    assert.strictEqual(response.body.length, helper.initialBlogs.length + 1)
-    assert(response.body.some(obj => obj.title === helper.dummyBlog.title))
+    assert.strictEqual(getResponse.body.length, helper.initialBlogs.length + 1)
+    assert(getResponse.body.some(obj => obj.id === postResponse.body.id))
+})
+
+test('api defaults likes to 0 if likes property is missing from post request', async () => {
+    const response = await api 
+        .post('/api/blogs')
+        .send({title: 'no likes', author: 'No Likes', url: 'noLikes.com'})
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+    
+    assert.strictEqual(response.body.likes, 0)
 })
 
 after(async () => {
