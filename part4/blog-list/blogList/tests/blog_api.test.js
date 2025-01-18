@@ -75,6 +75,37 @@ describe('api responds with status 400 post requests that', () => {
     })
 })
 
+describe('api successfully deals with delete requests when', () => {
+    test('an existing id is passed', async () => {
+        const getResponse = await api.get('/api/blogs')
+        const validId = getResponse.body[0].id
+        
+        await api.delete(`/api/blogs/${validId}`)
+            .expect(204)
+
+        const { body: modifiedList } = await api.get('/api/blogs')
+
+        assert.strictEqual(modifiedList.length, helper.initialBlogs.length - 1)
+        assert(!modifiedList.some(obj => obj.id === validId))
+    })
+
+    test('a non-existing id is passed', async () => {
+        newId = new Blog(helper.dummyBlog).toJSON().id
+        
+        await api.delete(`/api/blogs/${newId}`)
+            .expect(204)
+
+        const { body: unmodifiedList } = await api.get('/api/blogs')
+
+        assert.strictEqual(unmodifiedList.length, helper.initialBlogs.length)
+    })
+
+    test('a malformatted id is passed', async () => {
+        await api.delete('/api/blogs/malformatted-id')
+            .expect(400)
+    })
+})
+
 after(async () => {
     await mongoose.connection.close()
 })
