@@ -26,10 +26,23 @@ test('api returns correct number of blogs in JSON format', async () => {
     assert.strictEqual(response.body.length, helper.initialBlogs.length)
 })
 
-test.only('unique identifier of posts is id, not _id', async () => {
+test('unique identifier of posts is id, not _id', async () => {
     const response = await api.get('/api/blogs')
     assert(response.body[0].id)
     assert.strictEqual(response.body[0]._id, undefined)
+})
+
+test('post requests successfully creates a new blog', async () => {
+    await api
+        .post('/api/blogs')
+        .send(helper.dummyBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+    const response = await api.get('/api/blogs')
+    
+    assert.strictEqual(response.body.length, helper.initialBlogs.length + 1)
+    assert(response.body.some(obj => obj.title === helper.dummyBlog.title))
 })
 
 after(async () => {

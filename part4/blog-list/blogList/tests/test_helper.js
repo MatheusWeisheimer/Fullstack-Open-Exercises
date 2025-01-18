@@ -15,6 +15,14 @@ const initialBlogs = [
     }
 ]
 
+const dummyBlog = {
+    title: 'Dummy',
+    author: 'Douglas Usef Muhammad Young',
+    url: 'http://dummy.com',
+    likes: 0
+}
+
 module.exports = {
-    initialBlogs
+    initialBlogs,
+    dummyBlog
 }
