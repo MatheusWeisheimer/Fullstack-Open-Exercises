@@ -1,4 +1,4 @@
-const { test, beforeEach, after } = require('node:test')
+const { test, describe, beforeEach, after } = require('node:test')
 const assert = require('node:assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
@@ -53,6 +53,26 @@ test('api defaults likes to 0 if likes property is missing from post request', a
         .expect('Content-Type', /application\/json/)
     
     assert.strictEqual(response.body.likes, 0)
+})
+
+describe('api responds with status 400 post requests that', () => {
+    test('miss body.title', async () => {
+        const newPost = helper.dummyBlog
+        delete newPost.title
+        await api
+            .post('/api/blogs')
+            .send({newPost})
+            .expect(400)
+    })
+
+    test('miss body.url', async () => {
+        const newPost = helper.dummyBlog
+        delete newPost.url
+        await api
+            .post('/api/blogs')
+            .send({newPost})
+            .expect(400)
+    })
 })
 
 after(async () => {
