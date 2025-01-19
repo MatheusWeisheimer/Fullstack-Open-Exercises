@@ -75,8 +75,8 @@ describe('api responds with status 400 post requests that', () => {
     })
 })
 
-describe('api successfully deals with delete requests when', () => {
-    test('an existing id is passed', async () => {
+describe('api response to delete request when', () => {
+    test('an existing id is passed: 204, content is successfully deleted', async () => {
         const getResponse = await api.get('/api/blogs')
         const validId = getResponse.body[0].id
         
@@ -89,7 +89,7 @@ describe('api successfully deals with delete requests when', () => {
         assert(!modifiedList.some(obj => obj.id === validId))
     })
 
-    test('a non-existing id is passed', async () => {
+    test('a non-existing id is passed: 204, content remains unchanged', async () => {
         newId = new Blog(helper.dummyBlog).toJSON().id
         
         await api.delete(`/api/blogs/${newId}`)
@@ -100,9 +100,38 @@ describe('api successfully deals with delete requests when', () => {
         assert.strictEqual(unmodifiedList.length, helper.initialBlogs.length)
     })
 
-    test('a malformatted id is passed', async () => {
+    test('a malformatted id is passed: 400', async () => {
         await api.delete('/api/blogs/malformatted-id')
             .expect(400)
+    })
+})
+
+describe('api response to put requests when', () => {
+    test('valid params and body are passed: 200, data is successfully modified', async () => {
+        const getResponse = await api.get('/api/blogs')
+        const target = getResponse.body[0]
+
+        const { body: modifiedData } = await api
+            .put(`/api/blogs/${target.id}`)
+            .send({likes: target.likes + 1})
+            .expect(200)
+
+        assert.strictEqual(target.id, modifiedData.id)
+        assert.strictEqual(target.likes + 1, modifiedData.likes)
+    })
+
+    test('id from previously deleted blog is passed: 404', async () => {
+        const getResponse = await api.get('/api/blogs')
+        const target = getResponse.body[0]
+
+        await api
+            .delete(`/api/blogs/${target.id}`)
+            .expect(204)
+
+        await api
+            .put(`/api/blogs/${target.id}`)
+            .send({likes: target.likes + 1})
+            .expect(404)
     })
 })
 
