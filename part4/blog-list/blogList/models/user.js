@@ -8,11 +8,11 @@ const userSchema = new mongoose.Schema({
         minLength: 3,
     },
     name: String,
-    passowordHash: String,
+    passwordHash: String,
     blogs: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'blog',
+            ref: 'Blog',
         },
     ],
 })
