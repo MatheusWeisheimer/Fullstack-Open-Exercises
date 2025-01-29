@@ -2,6 +2,7 @@ const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
+const middleware = require('../utils/middleware')
 
 blogsRouter.get('/', async (request, response) => {
     const blogList = await Blog
@@ -11,14 +12,9 @@ blogsRouter.get('/', async (request, response) => {
     response.json(blogList)
 })
   
-blogsRouter.post('/', async (request, response) => {
-    const body = request.body
-
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)  
-    if (!decodedToken.id) {    
-        return response.status(401).json({ error: 'token invalid' })  
-    }  
-    const user = await User.findById(decodedToken.id)
+blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
+    const body = request.body  
+    const user = await User.findById(request.user.id)
 
     const blog = new Blog({
         title: body.title,
@@ -50,12 +46,11 @@ blogsRouter.put('/:id', async (request, response) => {
     : response.status(404).send({ error: 'Information on target does not exist on server' })
 })
 
-blogsRouter.delete('/:id', async (request, response) => {
+blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
     const blog = await Blog.findById(request.params.id)
     const userId = blog.user._id.toString()
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
 
-    if (userId !== decodedToken.id) {
+    if (userId !== request.user.id) {
         return response.status(401).json({ error: 'you do not have permission to delete this content' })
     }
 
