@@ -4,12 +4,24 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper = require('./test_helper')
 
 const api = supertest(app)
+let authToken = undefined
 
 beforeEach(async () => {
+    await User.deleteMany({})
     await Blog.deleteMany({})
+
+    await api
+        .post('/api/users')
+        .send(helper.dummyUser)
+
+    const loginReq = await api
+        .post('/login')
+        .send(helper.dummyUser)
+    authToken = loginReq.body.token
 
     for (let blog of helper.initialBlogs) {
         const blogObject = new Blog(blog)
@@ -32,27 +44,36 @@ test('unique identifier of posts is id, not _id', async () => {
     assert.strictEqual(response.body[0]._id, undefined)
 })
 
-test('post requests successfully creates a new blog', async () => {
-    const postResponse = await api
+test('post request successfully creates a new blog', async () => {
+    const postBlogReq = await api
         .post('/api/blogs')
         .send(helper.dummyBlog)
+        .set('Authorization', `Bearer ${authToken}`)
         .expect(201)
         .expect('Content-Type', /application\/json/)
 
-    const getResponse = await api.get('/api/blogs')
-    
-    assert.strictEqual(getResponse.body.length, helper.initialBlogs.length + 1)
-    assert(getResponse.body.some(obj => obj.id === postResponse.body.id))
+    const getBlogsReq = await api.get('/api/blogs')
+
+    assert.strictEqual(getBlogsReq.body.length, helper.initialBlogs.length + 1)
+    assert(getBlogsReq.body.some(obj => obj.id === postBlogReq.body.id))
 })
 
 test('api defaults likes to 0 if likes property is missing from post request', async () => {
     const response = await api 
         .post('/api/blogs')
         .send({title: 'no likes', author: 'No Likes', url: 'noLikes.com'})
+        .set('Authorization', `Bearer ${authToken}`)
         .expect(201)
-        .expect('Content-Type', /application\/json/)
+        
     
     assert.strictEqual(response.body.likes, 0)
+})
+
+test('api responds with 401 to post requests that do not contain a valid token', async () => {
+    await api 
+        .post('/api/blogs')
+        .send(helper.dummyBlog)
+        .expect(401)
 })
 
 describe('api responds with status 400 post requests that', () => {
@@ -62,6 +83,7 @@ describe('api responds with status 400 post requests that', () => {
         await api
             .post('/api/blogs')
             .send({newPost})
+            .set('Authorization', `Bearer ${authToken}`)
             .expect(400)
     })
 
@@ -71,6 +93,7 @@ describe('api responds with status 400 post requests that', () => {
         await api
             .post('/api/blogs')
             .send({newPost})
+            .set('Authorization', `Bearer ${authToken}`)
             .expect(400)
     })
 })
