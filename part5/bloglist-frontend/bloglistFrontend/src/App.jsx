@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
 import LoginForm from './components/LoginForm'
-import BlogList from './components/BlogList'
+import Blog from './components/Blog'
 import loginService from './services/login'
 import blogService from './services/blogs'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -20,10 +20,16 @@ const App = () => {
     try {
       const logedUser = await loginService.login(username, password)
       setUser(logedUser)
+      localStorage.setItem('user', JSON.stringify(logedUser))
     } catch(error) {
       console.error(error.message)
       return null
     }
+  }
+
+  const handleLogout = () => {
+    setUser(null)
+    localStorage.removeItem('user')
   }
 
   if (user === null) {
@@ -32,7 +38,11 @@ const App = () => {
 
   return (
     <div>
-      <BlogList blogs={blogs} user={user.name}/>
+      <h2>blogs</h2>
+      <p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>
+      {blogs.map(blog =>
+          <Blog key={blog.id} blog={blog} />
+      )}
     </div>
   )
 }
