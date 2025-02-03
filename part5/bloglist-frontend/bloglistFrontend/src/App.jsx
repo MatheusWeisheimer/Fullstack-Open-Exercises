@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import LoginForm from './components/LoginForm'
 import Blog from './components/Blog'
+import BlogForm from './components/BlogForm'
 import loginService from './services/login'
 import blogService from './services/blogs'
 
@@ -14,22 +15,30 @@ const App = () => {
     )  
   }, [])
 
-  const handleLogin = async (e, username, password) => {
-    e.preventDefault()
-
+  const handleLogin = async (username, password) => {
     try {
       const logedUser = await loginService.login(username, password)
       setUser(logedUser)
       localStorage.setItem('user', JSON.stringify(logedUser))
     } catch(error) {
       console.error(error.message)
-      return null
     }
   }
 
   const handleLogout = () => {
     setUser(null)
     localStorage.removeItem('user')
+  }
+
+  const handleCreate = async (blog) => {
+    try {
+      const savedBlog = await blogService.create(user.token, blog)
+      blogService.getAll().then(blogs => setBlogs(blogs))
+      return savedBlog
+    } catch(error) {
+      console.error(error.message)
+      return null
+    }
   }
 
   if (user === null) {
@@ -43,6 +52,7 @@ const App = () => {
       {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
       )}
+      <BlogForm handleCreate={handleCreate}/>
     </div>
   )
 }
