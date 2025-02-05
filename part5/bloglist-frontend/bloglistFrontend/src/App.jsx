@@ -1,15 +1,18 @@
-import { useState, useEffect } from 'react'
-import LoginForm from './components/LoginForm'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
-import Notification from './components/Notification'
-import loginService from './services/login'
+import LoginForm from './components/LoginForm'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
+import loginService from './services/login'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null)
   const [notification, setNotification] = useState(null)
+
+  const createFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -38,6 +41,7 @@ const App = () => {
       const savedBlog = await blogService.create(user.token, blog)
       blogService.getAll().then(blogs => setBlogs(blogs))
       displayNotification('success', `a new blog '${savedBlog.title}' by '${savedBlog.author}' added!`)
+      createFormRef.current.toggleVisibility()
       return savedBlog
     } catch(error) {
       console.error(error.message)
@@ -70,7 +74,9 @@ const App = () => {
       {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
       )}
-      <BlogForm handleCreate={handleCreate}/>
+      <Togglable buttonLabel='create blog' ref={createFormRef}>
+        <BlogForm handleCreate={handleCreate}/>
+      </Togglable>
     </div>
   )
 }
