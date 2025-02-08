@@ -15,10 +15,14 @@ const App = () => {
   const createFormRef = useRef()
 
   useEffect(() => {
+    loadBlogs()  
+  }, [])
+
+  const loadBlogs = () => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
-  }, [])
+    )
+  }
 
   const handleLogin = async (username, password) => {
     try {
@@ -39,7 +43,7 @@ const App = () => {
   const handleCreate = async (blog) => {
     try {
       const savedBlog = await blogService.create(user.token, blog)
-      blogService.getAll().then(blogs => setBlogs(blogs))
+      loadBlogs()
       displayNotification('success', `a new blog '${savedBlog.title}' by '${savedBlog.author}' added!`)
       createFormRef.current.toggleVisibility()
       return savedBlog
@@ -72,7 +76,7 @@ const App = () => {
       {notification && <Notification notification={notification}/>}
       <p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>
       {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} loadBlogs={loadBlogs}/>
       )}
       <Togglable buttonLabel='create blog' ref={createFormRef}>
         <BlogForm handleCreate={handleCreate}/>
