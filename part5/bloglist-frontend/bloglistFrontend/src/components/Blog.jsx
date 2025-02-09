@@ -1,4 +1,5 @@
-import { useState } from "react"
+import PropTypes from 'prop-types'
+import { useState } from 'react'
 import blogService from '../services/blogs'
 
 const Blog = ({ blog, loadBlogs, user }) => {
@@ -34,7 +35,7 @@ const Blog = ({ blog, loadBlogs, user }) => {
   }
 
   return (
-    <div style={{ border: '2px solid black', paddingTop: '.5em', marginBottom: '.33em'}}>
+    <div style={{ border: '2px solid black', paddingTop: '.5em', marginBottom: '.33em' }}>
       {blog.title} {blog.author} <button onClick={toggleVisibility}>{detailsVisible ? 'hide' : 'view'}</button>
       <div style={detailDisplay}>
         <div>{blog.url}</div>
@@ -42,8 +43,14 @@ const Blog = ({ blog, loadBlogs, user }) => {
         <div>{blog.user.name}</div>
         {user.username === blog.user.username && <button onClick={handleRemove}>remove</button>}
       </div>
-    </div>  
+    </div>
   )
+}
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  loadBlogs: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired
 }
 
 export default Blog

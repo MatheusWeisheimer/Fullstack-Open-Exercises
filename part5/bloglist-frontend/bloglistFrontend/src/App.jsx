@@ -15,7 +15,7 @@ const App = () => {
   const createFormRef = useRef()
 
   useEffect(() => {
-    loadBlogs()  
+    loadBlogs()
   }, [])
 
   const loadBlogs = () => {
@@ -56,7 +56,7 @@ const App = () => {
   }
 
   const displayNotification = (status, message) => {
-    setNotification({status, message})
+    setNotification({ status, message })
     setTimeout(() => {
       setNotification(null)
     }, 3500)
@@ -77,7 +77,7 @@ const App = () => {
       {notification && <Notification notification={notification}/>}
       <p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>
       {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} loadBlogs={loadBlogs} user={user}/>
+        <Blog key={blog.id} blog={blog} loadBlogs={loadBlogs} user={user}/>
       )}
       <Togglable buttonLabel='create blog' ref={createFormRef}>
         <BlogForm handleCreate={handleCreate}/>
