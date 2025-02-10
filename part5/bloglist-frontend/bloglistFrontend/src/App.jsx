@@ -55,6 +55,19 @@ const App = () => {
     }
   }
 
+  const handleLike = async blog => {
+    try {
+      await blogService.like({
+        ...blog,
+        user: blog.user.id,
+        likes: blog.likes ? blog.likes + 1 : 1
+      })
+      loadBlogs()
+    } catch (error) {
+      console.error(error.message)
+    }
+  }
+
   const displayNotification = (status, message) => {
     setNotification({ status, message })
     setTimeout(() => {
@@ -77,7 +90,7 @@ const App = () => {
       {notification && <Notification notification={notification}/>}
       <p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} loadBlogs={loadBlogs} user={user}/>
+        <Blog key={blog.id} blog={blog} handleLike={handleLike} loadBlogs={loadBlogs} user={user}/>
       )}
       <Togglable buttonLabel='create blog' ref={createFormRef}>
         <BlogForm handleCreate={handleCreate}/>
