@@ -41,5 +41,26 @@ describe('Blog app', () => {
       const locator = await page.getByText('wrong username or password')
       await expect(locator).toBeVisible()
     })
+
+    describe('When logged in', () => {
+      beforeEach(async ({ page }) => {
+        await page.locator('div').filter({ hasText: /^username$/ })
+          .getByRole('textbox').fill('tester')
+        await page.locator('div').filter({ hasText: /^password$/ })
+          .getByRole('textbox').fill('testing')
+        await page.getByRole('button').click()
+      })
+    
+      test('a new blog can be created', async ({ page }) => {
+        await page.getByRole('button').filter({ hasText: 'create blog' }).click()
+        await page.locator('#title').fill('title')
+        await page.locator('#author').fill('author')
+        await page.locator('#url').fill('url.com')
+        await page.getByRole('button').filter({ hasText: 'create' }).click()
+
+        const locator = await page.getByText('title author')
+        await expect(locator).toBeVisible()
+      })
+    })
   })
 })
