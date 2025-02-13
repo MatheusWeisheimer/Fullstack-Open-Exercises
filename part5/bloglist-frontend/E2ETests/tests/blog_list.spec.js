@@ -1,8 +1,9 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
+const helper = require('./helper.js')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
-    await request.post('/api/tests/reset')
+    await request.post('/api/testing/reset')
     await request.post('/api/users', {
       data: {
         name: 'Mr Tester',
@@ -21,22 +22,14 @@ describe('Blog app', () => {
 
   describe('Login', () => {
     test('succeeds with correct credentials', async ({ page }) => {
-      await page.locator('div').filter({ hasText: /^username$/ })
-        .getByRole('textbox').fill('tester')
-      await page.locator('div').filter({ hasText: /^password$/ })
-        .getByRole('textbox').fill('testing')
-      await page.getByRole('button').click()
+      helper.loginWith(page, 'tester', 'testing')
 
       const locator = await page.getByText('tester logged in')
       await expect(locator).toBeVisible()
     })
 
     test('fails with wrong credentials', async ({ page }) => {
-      await page.locator('div').filter({ hasText: /^username$/ })
-        .getByRole('textbox').fill('tester')
-      await page.locator('div').filter({ hasText: /^password$/ })
-        .getByRole('textbox').fill('wrong')
-      await page.getByRole('button').click()
+      helper.loginWith(page, 'tester', 'wrong')
 
       const locator = await page.getByText('wrong username or password')
       await expect(locator).toBeVisible()
@@ -44,22 +37,33 @@ describe('Blog app', () => {
 
     describe('When logged in', () => {
       beforeEach(async ({ page }) => {
-        await page.locator('div').filter({ hasText: /^username$/ })
-          .getByRole('textbox').fill('tester')
-        await page.locator('div').filter({ hasText: /^password$/ })
-          .getByRole('textbox').fill('testing')
-        await page.getByRole('button').click()
+        helper.loginWith(page, 'tester', 'testing')
       })
     
       test('a new blog can be created', async ({ page }) => {
-        await page.getByRole('button').filter({ hasText: 'create blog' }).click()
-        await page.locator('#title').fill('title')
-        await page.locator('#author').fill('author')
-        await page.locator('#url').fill('url.com')
-        await page.getByRole('button').filter({ hasText: 'create' }).click()
+        helper.createNote(page, 'title', 'author', 'url')
 
         const locator = await page.getByText('title author')
         await expect(locator).toBeVisible()
+      })
+
+      describe('When a blog exists', () => {
+        beforeEach(async ({ page }) => {
+          helper.createNote(page, 'title', 'author', 'url')
+        })
+
+        test('the blog can be liked', async ({ page }) => {
+          const div = await page.getByText('title author')
+          await div.getByRole('button').click()
+
+          const likesBefore = await div.getByText('likes 0')
+          await expect(likesBefore).toBeVisible()
+
+          await div.getByRole('button').filter({ hasText: 'like' }).click()
+          
+          const likesAfter = await div.getByText('likes 1')
+          await expect(likesAfter).toBeVisible()
+        })
       })
     })
   })
