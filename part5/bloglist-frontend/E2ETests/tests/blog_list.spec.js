@@ -64,6 +64,16 @@ describe('Blog app', () => {
           const likesAfter = await div.getByText('likes 1')
           await expect(likesAfter).toBeVisible()
         })
+
+        test('the blog can be deleted', async ({ page }) => {
+          const div = await page.getByText('title author')
+          await div.getByRole('button').click()
+
+          await page.once('dialog', async dialog => { await dialog.accept() })
+          await div.getByRole('button').filter({ hasText: 'remove' }).click()
+
+          await expect(div).toHaveCount(0)
+        })
       })
     })
   })
