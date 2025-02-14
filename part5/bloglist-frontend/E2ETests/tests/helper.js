@@ -6,7 +6,7 @@ const loginWith = async (page, username, password) => {
   await page.getByRole('button').click()
 }
 
-const createNote = async (page, title, author, url) => {
+const createBlog = async (page, title, author, url) => {
   await page.getByRole('button').filter({ hasText: 'create blog' }).click()
   await page.locator('#title').fill(title)
   await page.locator('#author').fill(author)
@@ -14,4 +14,14 @@ const createNote = async (page, title, author, url) => {
   await page.getByRole('button').filter({ hasText: 'create' }).click()
 }
 
-export { loginWith, createNote }
+const createUser = async (request, username, name, password) => {
+  await request.post('/api/users', {
+    data: {
+      name: name,
+      username: username,
+      password: password
+    }
+  })
+}
+
+export { loginWith, createBlog, createUser }

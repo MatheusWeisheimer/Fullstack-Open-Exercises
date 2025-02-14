@@ -1,16 +1,10 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
 const helper = require('./helper.js')
 
-describe('Blog app', () => {
+test.describe.serial('Blog app', () => {
   beforeEach(async ({ page, request }) => {
     await request.post('/api/testing/reset')
-    await request.post('/api/users', {
-      data: {
-        name: 'Mr Tester',
-        username: 'tester',
-        password: 'testing'
-      }
-    })
+    await helper.createUser(request, 'tester', 'Mr Tester', 'testing')
 
     await page.goto('/')
   })
@@ -22,14 +16,14 @@ describe('Blog app', () => {
 
   describe('Login', () => {
     test('succeeds with correct credentials', async ({ page }) => {
-      helper.loginWith(page, 'tester', 'testing')
+      await helper.loginWith(page, 'tester', 'testing')
 
       const locator = await page.getByText('tester logged in')
       await expect(locator).toBeVisible()
     })
 
     test('fails with wrong credentials', async ({ page }) => {
-      helper.loginWith(page, 'tester', 'wrong')
+      await helper.loginWith(page, 'tester', 'wrong')
 
       const locator = await page.getByText('wrong username or password')
       await expect(locator).toBeVisible()
@@ -37,11 +31,11 @@ describe('Blog app', () => {
 
     describe('When logged in', () => {
       beforeEach(async ({ page }) => {
-        helper.loginWith(page, 'tester', 'testing')
+        await helper.loginWith(page, 'tester', 'testing')
       })
     
       test('a new blog can be created', async ({ page }) => {
-        helper.createNote(page, 'title', 'author', 'url')
+        await helper.createBlog(page, 'title', 'author', 'url')
 
         const locator = await page.getByText('title author')
         await expect(locator).toBeVisible()
@@ -49,7 +43,7 @@ describe('Blog app', () => {
 
       describe('When a blog exists', () => {
         beforeEach(async ({ page }) => {
-          helper.createNote(page, 'title', 'author', 'url')
+          await helper.createBlog(page, 'title', 'author', 'url')
         })
 
         test('the blog can be liked', async ({ page }) => {
@@ -73,6 +67,18 @@ describe('Blog app', () => {
           await div.getByRole('button').filter({ hasText: 'remove' }).click()
 
           await expect(div).toHaveCount(0)
+        })
+
+        test('only the user who added the blog sees the blog\'s delete button', async ({ page, request }) => {
+          await page.getByRole('button').filter({ hasText: 'logout' }).click()
+          await helper.createUser(request, 'username', 'name', 'password')
+          await helper.loginWith(page, 'username', 'password')
+
+          const div = await page.getByText('title author')
+          await div.getByRole('button').click()
+          
+          const locator = await div.getByRole('button').filter({ hasText: 'remove' })
+          await expect(locator).toHaveCount(0)
         })
       })
     })
