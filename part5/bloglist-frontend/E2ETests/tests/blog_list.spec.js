@@ -81,6 +81,27 @@ test.describe.serial('Blog app', () => {
           await expect(locator).toHaveCount(0)
         })
       })
+
+      test('blogs are arranged in the order according to the likes', async ({ page }) => {
+        await helper.createBlog(page, 'first', 'first', 'first')
+        const firstBlog = await page.getByText('first first')
+        await firstBlog.getByRole('button').click()
+        await firstBlog.getByRole('button').filter({ hasText: 'like' }).click()
+
+        await helper.createBlog(page, 'second', 'second', 'second')
+        const secondBlog = await page.getByText('second second')
+        
+        await page.getByText('likes 1').waitFor()
+        await expect(page.locator('.blog').first()).toContainText('first first')
+
+        await secondBlog.getByRole('button').click()
+        await secondBlog.getByRole('button').filter({ hasText: 'like' }).click()
+        await page.waitForTimeout(500)
+        await secondBlog.getByRole('button').filter({ hasText: 'like' }).click()
+ 
+        await page.getByText('likes 2').waitFor()
+        await expect(page.locator('.blog').first()).toContainText('second second')
+      })
     })
   })
 })

@@ -12,6 +12,7 @@ const createBlog = async (page, title, author, url) => {
   await page.locator('#author').fill(author)
   await page.locator('#url').fill(url)
   await page.getByRole('button').filter({ hasText: 'create' }).click()
+  await page.getByText(`${title} ${author}`).waitFor()
 }
 
 const createUser = async (request, username, name, password) => {
