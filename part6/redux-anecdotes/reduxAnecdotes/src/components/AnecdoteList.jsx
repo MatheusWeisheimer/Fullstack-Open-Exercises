@@ -8,7 +8,7 @@ const AnecdoteList = () => {
     ? anecdotes.filter(a => a.content.includes(filter))
     : anecdotes
   ))
-  const sortedAnecdotes = anecdotes.sort((a, b) => b.votes - a.votes)
+  const sortedAnecdotes = [ ...anecdotes ].sort((a, b) => b.votes - a.votes)
 
   const vote = id => {
     dispatch(voteAnecdote(id))
