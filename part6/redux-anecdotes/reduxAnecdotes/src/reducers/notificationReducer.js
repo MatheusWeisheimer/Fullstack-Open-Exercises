@@ -18,12 +18,12 @@ const notificationSlice = createSlice({
 
 export const { setNotification, removeNotification } = notificationSlice.actions
 
-export const showNotification = message => {
+export const activateNotification = (message, time) => {
   return dispatch => {
     dispatch(setNotification(message))
     setTimeout(() => {
       dispatch(removeNotification(message))
-    }, 5000)
+    }, time)
   }
 }
 
