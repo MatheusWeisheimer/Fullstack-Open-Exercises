@@ -27,7 +27,7 @@ const App = () => {
 
   const handleVote = (anecdote) => {
     newAnecdoteMutation.mutate(anecdote)
-    setNotification(notificationDispatch, `anecdote '${anecdote.content}' voted`, 5000)
+    setNotification(notificationDispatch, `anecdote '${anecdote.content}' voted`)
   }
 
   if (result.isLoading) {

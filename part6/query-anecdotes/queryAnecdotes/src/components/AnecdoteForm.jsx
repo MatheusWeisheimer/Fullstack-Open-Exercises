@@ -12,6 +12,10 @@ const AnecdoteForm = () => {
     onSuccess: (newAnecdote) => {
       const anecdotes = queryClient.getQueryData(['anecdotes'])
       queryClient.setQueryData(['anecdotes'], anecdotes.concat(newAnecdote))
+      setNotification(notificationDispatch, `anecdote '${newAnecdote.content}' created`)
+    },
+    onError: () => {
+      setNotification(notificationDispatch, 'too short anecdote, must have length 5 or more')
     }
   })
 
@@ -20,7 +24,6 @@ const AnecdoteForm = () => {
     const content = event.target.anecdote.value
     newAnecdoteMutatuon.mutate({ content, votes: 0 })
     event.target.anecdote.value = ''
-    setNotification(notificationDispatch, `anecdote '${content}' created`, 5000)
   }
 
   return (
