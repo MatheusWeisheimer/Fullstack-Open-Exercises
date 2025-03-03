@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, handleLike, loadBlogs, user }) => {
+const Blog = ({ blog, handleLike, user }) => {
   const [detailsVisible, setDetailsVisible] = useState(false)
   const detailDisplay = { display: detailsVisible ? '' : 'none' }
 
@@ -11,14 +11,14 @@ const Blog = ({ blog, handleLike, loadBlogs, user }) => {
   }
 
   const handleRemove = async () => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      try {
-        await blogService.remove(user.token, blog)
-        loadBlogs()
-      } catch (error) {
-        console.error(error.message)
-      }
-    }
+    // if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+    //   try {
+    //     await blogService.remove(user.token, blog)
+    //     loadBlogs()
+    //   } catch (error) {
+    //     console.error(error.message)
+    //   }
+    // }
   }
 
   return (
@@ -36,7 +36,6 @@ const Blog = ({ blog, handleLike, loadBlogs, user }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  loadBlogs: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired
 }
 

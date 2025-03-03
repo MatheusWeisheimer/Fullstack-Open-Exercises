@@ -1,17 +1,22 @@
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { createBlog } from '../reducers/blogsReducer'
+import { successNotification, failureNotification } from '../reducers/notificationReducer'
 
-const BlogForm = ({ handleCreate }) => {
+const BlogForm = ({ user }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
+  const dispatch = useDispatch()
+
   const handleFormSubmit = async (e) => {
     e.preventDefault()
-    const res = await handleCreate({ title, author, url })
-    if (res !== null) {
-      setTitle('')
-      setAuthor('')
-      setUrl('')
+    try {
+      await dispatch(createBlog(user.token, { title, author, url}))
+      dispatch(successNotification('Success'))
+    } catch (error) {
+      dispatch(failureNotification('Failure'))
     }
   }
 

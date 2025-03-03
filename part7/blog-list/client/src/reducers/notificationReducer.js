@@ -16,7 +16,7 @@ const notificationSlice = createSlice({
   }
 })
 
-export const { setNotification, removeNotification } = notificationSlice.actions
+const { setNotification, removeNotification } = notificationSlice.actions
 
 export const successNotification = (message, time = 3000) => {
   return dispatch => {
