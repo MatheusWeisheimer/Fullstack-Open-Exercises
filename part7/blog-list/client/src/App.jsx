@@ -7,7 +7,7 @@ import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import loginService from './services/login'
-import { successNotification, failureNotification } from './reducers/notificationReducer'
+import { failureNotification } from './reducers/notificationReducer'
 import { initBlogs } from './reducers/blogsReducer'
 
 const App = () => {
@@ -36,19 +36,6 @@ const App = () => {
     localStorage.removeItem('user')
   }
 
-  const handleLike = async blog => {
-    // try {
-    //   await blogService.like({
-    //     ...blog,
-    //     user: blog.user.id,
-    //     likes: blog.likes ? blog.likes + 1 : 1
-    //   })
-    //   loadBlogs()
-    // } catch (error) {
-    //   console.error(error.message)
-    // }
-  }
-
   if (user === null) {
     return (
       <>
@@ -64,7 +51,7 @@ const App = () => {
       <Notification/>
       <p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} handleLike={handleLike} user={user}/>
+        <Blog key={blog.id} blog={blog} user={user}/>
       )}
       <Togglable buttonLabel='create blog' ref={createFormRef}>
         <BlogForm user={user}/>
