@@ -14,9 +14,12 @@ const BlogForm = ({ user }) => {
     e.preventDefault()
     try {
       await dispatch(createBlog(user.token, { title, author, url}))
-      dispatch(successNotification('Success'))
+      dispatch(successNotification(`'${title}' from '${author}' added to the list of blogs`))
+      setTitle('')
+      setAuthor('')
+      setUrl('')
     } catch (error) {
-      dispatch(failureNotification('Failure'))
+      dispatch(failureNotification('you must fill all fields to submit'))
     }
   }
 

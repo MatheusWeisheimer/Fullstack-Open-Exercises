@@ -10,11 +10,21 @@ const blogsSlice = createSlice({
     },
     appendBlog(state, action) {
       return state.concat(action.payload)
+    },
+    updateBlog(state, action) {
+      const updated = action.payload
+      return state.map(b => (
+        b.id === updated.id ? { ...b, likes: updated.likes} : b
+      ))
+    },
+    removeBlog(state, action) {
+      const target = action.payload.id
+      return state.filter(b => b.id !== target)
     }
   }
 })  
 
-const { setBlogs, appendBlog } = blogsSlice.actions
+const { setBlogs, appendBlog, updateBlog, removeBlog } = blogsSlice.actions
 
 export const initBlogs = () => {
   return async dispatch => {
@@ -32,6 +42,23 @@ export const createBlog = (token, blog) => {
     } catch (error) {
       return Promise.reject(error)
     }
+  }
+}
+
+export const likeBlog = blog => {
+  return async dispatch => {
+      const { author, id, likes, title, url } = blog
+      const response = await blogService.like(
+        { author, id, likes: likes + 1, title, url }
+      )
+      dispatch(updateBlog(response))
+  }
+}
+
+export const deleteBlog = (token, blog) => {
+  return async dispatch => {
+    const response = await blogService.remove(token, blog)
+    dispatch(removeBlog(blog))
   }
 }
 

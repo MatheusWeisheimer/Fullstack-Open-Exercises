@@ -1,24 +1,26 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import blogService from '../services/blogs'
+import { useDispatch } from 'react-redux'
+import { likeBlog, deleteBlog } from '../reducers/blogsReducer'
 
-const Blog = ({ blog, handleLike, user }) => {
+const Blog = ({ blog, user }) => {
   const [detailsVisible, setDetailsVisible] = useState(false)
   const detailDisplay = { display: detailsVisible ? '' : 'none' }
+
+  const dispatch = useDispatch()
 
   const toggleVisibility = () => {
     setDetailsVisible(!detailsVisible)
   }
 
   const handleRemove = async () => {
-    // if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-    //   try {
-    //     await blogService.remove(user.token, blog)
-    //     loadBlogs()
-    //   } catch (error) {
-    //     console.error(error.message)
-    //   }
-    // }
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      dispatch(deleteBlog(user.token, blog))
+    }
+  }
+
+  const handleLike = () => {
+    dispatch(likeBlog(blog))
   }
 
   return (
@@ -26,7 +28,7 @@ const Blog = ({ blog, handleLike, user }) => {
       {blog.title} {blog.author} <button onClick={toggleVisibility} className='toggleBtn'>{detailsVisible ? 'hide' : 'view'}</button>
       <div style={detailDisplay} className='detail'>
         <div>{blog.url}</div>
-        <div>likes {blog.likes}<button onClick={() => handleLike(blog)} className='likeBtn'>like</button></div>
+        <div>likes {blog.likes}<button onClick={handleLike} className='likeBtn'>like</button></div>
         <div>{blog.user.name}</div>
         {user.username === blog.user.username && <button onClick={handleRemove}>remove</button>}
       </div>
