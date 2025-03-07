@@ -1,18 +1,17 @@
-import { useState, useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
-import { useSelector } from 'react-redux'
+import { useEffect, useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { initBlogs } from './reducers/blogsReducer'
+import { logout } from './reducers/userReducer'
+import { failureNotification } from './reducers/notificationReducer'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-import loginService from './services/login'
-import { failureNotification } from './reducers/notificationReducer'
-import { initBlogs } from './reducers/blogsReducer'
 
 const App = () => {
   const blogs = useSelector(state => state.blogs)
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null)
+  const user = useSelector(state => state.user)
   const dispatch = useDispatch()
   const createFormRef = useRef()
 
@@ -20,27 +19,15 @@ const App = () => {
     dispatch(initBlogs())
   }, [])
 
-  const handleLogin = async (username, password) => {
-    try {
-      const logedUser = await loginService.login(username, password)
-      setUser(logedUser)
-      localStorage.setItem('user', JSON.stringify(logedUser))
-    } catch(error) {
-      console.error(error.message)
-      dispatch(failureNotification('wrong username or password'))
-    }
-  }
-
   const handleLogout = () => {
-    setUser(null)
-    localStorage.removeItem('user')
+    dispatch(logout())
   }
 
   if (user === null) {
     return (
       <>
         <Notification/>
-        <LoginForm handleLogin={handleLogin}/>
+        <LoginForm/>
       </>
     )
   }

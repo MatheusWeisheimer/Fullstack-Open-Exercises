@@ -1,12 +1,20 @@
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { login } from '../reducers/userReducer'
+import { failureNotification } from '../reducers/notificationReducer'
 
-const LoginForm = ({ handleLogin }) => {
+const LoginForm = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const dispatch = useDispatch()
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault()
-    handleLogin(username, password)
+    try {
+      await dispatch(login(username, password))
+    } catch (error) {
+      dispatch(failureNotification('invalid username or password'))
+    }
   }
 
   return (
