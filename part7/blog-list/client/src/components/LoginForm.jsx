@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { login } from '../reducers/userReducer'
 import { failureNotification } from '../reducers/notificationReducer'
 
@@ -7,11 +8,13 @@ const LoginForm = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const handleFormSubmit = async (e) => {
     e.preventDefault()
     try {
       await dispatch(login(username, password))
+      navigate('/blogs')
     } catch (error) {
       dispatch(failureNotification('invalid username or password'))
     }

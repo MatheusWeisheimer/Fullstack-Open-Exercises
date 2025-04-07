@@ -17,14 +17,14 @@ const BlogList = () => {
 
   return (
     <div>
+      <Togglable buttonLabel='create new' ref={createFormRef}>
+        <BlogForm/>
+      </Togglable>
       {blogs.map(blog =>
         <Link to={`/blogs/${blog.id}`} style={linkStyle} key={blog.id}>
           {blog.title} - {blog.author}
         </Link>
       )}
-      <Togglable buttonLabel='create blog' ref={createFormRef}>
-        <BlogForm/>
-      </Togglable>
     </div>
   )
 } 

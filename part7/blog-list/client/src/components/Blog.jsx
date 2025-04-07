@@ -30,7 +30,7 @@ const Blog = () => {
         {blog.likes} likes <button onClick={handleLike} className='likeBtn'>like</button>
       </p>
       <p>added by {blog.author}</p>
-      {user.username === blog.user.username && <button onClick={handleRemove}>remove</button>}
+      {user && user.username === blog.user.username && <button onClick={handleRemove}>remove</button>}
     </div>
   )
 }
