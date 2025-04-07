@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useSelector } from 'react-redux'
-import Blog from './Blog'
+import { Link } from 'react-router-dom'
 import BlogForm from './BlogForm'
 import Togglable from './Togglable'
 
@@ -8,10 +8,19 @@ const BlogList = () => {
   const createFormRef = useRef()
   const blogs = useSelector(state => state.blogs)
 
+  const linkStyle = {
+    display: 'block',
+    paddingTop: '.5em',
+    border: '1px solid black',
+    marginBottom: '.25em'
+  }
+
   return (
     <div>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog}/>
+        <Link to={`/blogs/${blog.id}`} style={linkStyle} key={blog.id}>
+          {blog.title} - {blog.author}
+        </Link>
       )}
       <Togglable buttonLabel='create blog' ref={createFormRef}>
         <BlogForm/>

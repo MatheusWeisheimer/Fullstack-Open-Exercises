@@ -8,7 +8,7 @@ const User = () => {
 
   useEffect(() => {
     usersService.getAll()
-      .then(res => res.find(user => user.id == id))
+      .then(res => res.find(user => user.id === id))
       .then(res => res ? setUser(res) : null)
   }, [])
 

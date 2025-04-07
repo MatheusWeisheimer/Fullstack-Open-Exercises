@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { initBlogs } from './reducers/blogsReducer'
 import { logout } from './reducers/userReducer'
 import BlogList from './components/BlogList'
+import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import UsersInfo from './components/UsersInfo'
@@ -37,6 +38,7 @@ const App = () => {
       <p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>
       <Routes>
         <Route path='/blogs' element={<BlogList/>}/>
+        <Route path='/blogs/:id' element={<Blog/>}/>
         <Route path='/users' element={<UsersInfo/>}/>
         <Route path='/users/:id' element={<User/>}/>        
       </Routes> 
