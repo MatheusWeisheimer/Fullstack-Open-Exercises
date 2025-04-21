@@ -25,6 +25,7 @@ const App = () => {
       <h2>blog app</h2>
       <Notification/>
       <Routes>
+        <Route path='/' element={<Navigate replace to='/blogs'/>}/>
         <Route path='/blogs' element={<BlogList/>}/>
         <Route path='/blogs/:id' element={<Blog/>}/>
         <Route 
