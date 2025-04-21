@@ -1,18 +1,18 @@
-import { useSelector } from "react-redux"
-import { Alert } from '@mui/material'
+import { useSelector } from "react-redux";
+import { Alert } from "@mui/material";
 
 const Notification = () => {
-  const notification = useSelector(state => state.notification)
+  const notification = useSelector((state) => state.notification);
 
   if (!notification || !notification.message) {
-    return null
+    return null;
   }
 
   return (
-    <Alert severity={notification.type == 'failure' ? 'error' : 'success'}>
+    <Alert severity={notification.type == "failure" ? "error" : "success"}>
       {notification.message}
     </Alert>
-  )
-}
+  );
+};
 
-export default Notification
+export default Notification;

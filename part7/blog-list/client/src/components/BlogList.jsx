@@ -1,5 +1,5 @@
-import { useRef } from 'react'
-import { useSelector } from 'react-redux'
+import { useRef } from "react";
+import { useSelector } from "react-redux";
 import {
   Table,
   TableBody,
@@ -7,14 +7,14 @@ import {
   TableContainer,
   TableRow,
   Paper,
-} from '@mui/material'
-import { Link } from 'react-router-dom'
-import BlogForm from './BlogForm'
-import Togglable from './Togglable'
+} from "@mui/material";
+import { Link } from "react-router-dom";
+import BlogForm from "./BlogForm";
+import Togglable from "./Togglable";
 
 const BlogList = () => {
-  const createFormRef = useRef()
-  const blogs = useSelector(state => state.blogs)
+  const createFormRef = useRef();
+  const blogs = useSelector((state) => state.blogs);
 
   // const linkStyle = {
   //   display: 'block',
@@ -25,29 +25,26 @@ const BlogList = () => {
 
   return (
     <div>
-      <Togglable buttonLabel='create new' ref={createFormRef}>
-        <BlogForm/>
+      <Togglable buttonLabel="create new" ref={createFormRef}>
+        <BlogForm />
       </Togglable>
 
       <TableContainer component={Paper}>
         <Table>
           <TableBody>
-            {blogs.map(blog => (
+            {blogs.map((blog) => (
               <TableRow key={blog.id}>
                 <TableCell>
                   <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
                 </TableCell>
-                <TableCell>
-                  {blog.author}
-                </TableCell>
+                <TableCell>{blog.author}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-
     </div>
-  )
-} 
+  );
+};
 
-export default BlogList
+export default BlogList;
