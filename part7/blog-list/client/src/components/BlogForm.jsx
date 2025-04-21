@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { createBlog } from '../reducers/blogsReducer'
+import { TextField, Button } from '@mui/material'
 import { successNotification, failureNotification } from '../reducers/notificationReducer'
 
 const BlogForm = () => {
@@ -27,26 +28,36 @@ const BlogForm = () => {
   return (
     <>
       <h2>create new</h2>
-      <form onSubmit={(e) => handleFormSubmit(e)}>
+      <form onSubmit={(e) => handleFormSubmit(e)} style={{display: 'flex', gap: '.5em'}}>
         <div>
-            title:<input
+            <TextField
+            size='small'
+            label='Title'
             id='title'
             value={title}
             onChange={({ target }) => setTitle(target.value)}/>
         </div>
         <div>
-            author:<input
+            <TextField
+            size='small'
+            label='Author'
             value={author}
             id='author'
             onChange={({ target }) => setAuthor(target.value)}/>
         </div>
         <div>
-            url:<input
+            <TextField
+            size='small'
+            label='Url'
             id='url'
             value={url}
             onChange={({ target }) => setUrl(target.value)}/>
         </div>
-        <button className='createBtn'>create</button>
+        <Button 
+          variant='contained' 
+          color='primary' 
+          type='submit' 
+          >create</Button>
       </form>
     </>
   )

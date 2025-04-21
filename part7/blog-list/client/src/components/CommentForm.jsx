@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { commentBlog } from '../reducers/blogsReducer'
+import { TextField, Button } from '@mui/material'
 import { failureNotification } from '../reducers/notificationReducer'
 
 const CommentForm = () => {
@@ -21,8 +22,8 @@ const CommentForm = () => {
 
   return (
     <form onSubmit={sendComment}>
-      <input value={comment} onChange={(e) => setComment(e.target.value)}/>
-      <button>add comment</button>
+      <TextField size='small' label='Comment' value={comment} onChange={(e) => setComment(e.target.value)}/>
+      <Button variant='contained'>add comment</Button>
     </form>
   )
 }

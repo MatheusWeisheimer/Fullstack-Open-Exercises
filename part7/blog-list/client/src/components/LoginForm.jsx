@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { login } from '../reducers/userReducer'
 import { failureNotification } from '../reducers/notificationReducer'
+import { Typography, TextField, Button } from '@mui/material'
 
 const LoginForm = () => {
   const [username, setUsername] = useState('')
@@ -22,22 +23,31 @@ const LoginForm = () => {
 
   return (
     <>
-      <h2>log in to application</h2>
-      <form onSubmit={(e) => handleFormSubmit(e)}>
+      <Typography variant="h4" component="h2" gutterBottom>
+        Log in to application
+      </Typography>
+      <form 
+        onSubmit={(e) => handleFormSubmit(e)}
+        style={{ display: 'flex', flexDirection: 'column', alignItems: 'start', gap: '1em'}}  
+      >
         <div>
-                    username<input
+            <TextField
+            label='Username'
+            size='medium'
             value={username}
             onChange={({ target }) => setUsername(target.value)}
           />
         </div>
         <div>
-                    password<input
+            <TextField
+            label='Password'
+            size='medium'
             type='password'
             value={password}
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <button>login</button>
+        <Button variant='contained' type='submit'>login</Button>
       </form>
     </>
   )

@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { initBlogs } from './reducers/blogsReducer'
-import { logout } from './reducers/userReducer'
+import { Container, Typography } from '@mui/material'
 import BlogList from './components/BlogList'
 import NavMenu from './components/NavMenu'
 import Blog from './components/Blog'
@@ -20,9 +20,11 @@ const App = () => {
   }, [])
 
   return (
-    <div>
+    <Container>
       <NavMenu/>
-      <h2>blog app</h2>
+      <Typography variant="h2" component="h1" gutterBottom>
+        Blog App
+      </Typography>
       <Notification/>
       <Routes>
         <Route path='/' element={<Navigate replace to='/blogs'/>}/>
@@ -38,7 +40,7 @@ const App = () => {
         />
         <Route path='/login' element={<LoginForm/>}/>        
       </Routes> 
-    </div>
+    </Container>
   )
 }
 

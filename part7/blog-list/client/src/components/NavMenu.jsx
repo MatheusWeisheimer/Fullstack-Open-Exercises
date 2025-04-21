@@ -1,6 +1,9 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { logout } from '../reducers/userReducer'
+import { 
+  AppBar, Toolbar, IconButton, Button 
+} from '@mui/material'
 
 const NavMenu = () => {
   const user = useSelector(state => state.user)
@@ -10,22 +13,28 @@ const NavMenu = () => {
     dispatch(logout())
   }
 
-  const navStyle = {
-    backgroundColor: 'lightgray',
-    padding: '.33em',
-    display: 'flex',
-    gap: '.5em'
-  }
-
   return (
-    <div style={navStyle}>
-      <Link to='/blogs'>blogs</Link>
-      <Link to='/users'>users</Link>
-      { user
-          ? <em>{user.name} logged in <button onClick={handleLogout}>logout</button></em> 
-          : <Link to='/login'>login</Link>
-      }
-    </div>
+    <AppBar position='static'>
+      <Toolbar>
+        <Button color='inherit' component={Link} to='/blogs'>
+          blogs
+        </Button>
+        <Button color='inherit' component={Link} to='/users'>
+          users
+        </Button>
+        { user
+            ? (
+              <em style={{margin: '0 .5em'}}>
+                {user.name} logged in <Button 
+                  color='inherit' 
+                  variant='outlined' 
+                  onClick={handleLogout}>logout
+                </Button>
+              </em>) 
+            : <Button color='inherit' component={Link} to='/login'>login</Button>
+        }
+      </Toolbar>
+    </AppBar>
   )
 }
 
