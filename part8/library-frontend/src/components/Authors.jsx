@@ -6,10 +6,10 @@ const Authors = (props) => {
   if (!props.show) {
     return null
   }
-  const result = useQuery(ALL_AUTHORS)
 
+  const result = useQuery(ALL_AUTHORS)
   if (result.loading) {
-    return <div>loading...</div>
+    return <div>loading authors...</div>
   }
   
   const authors = result.data.allAuthors
