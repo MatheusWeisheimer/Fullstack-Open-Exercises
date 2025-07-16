@@ -7,7 +7,9 @@ const Books = (props) => {
     return null
   }
 
-  const result = useQuery(ALL_BOOKS)
+  const result = useQuery(ALL_BOOKS,{
+    skip: !props.show
+  })
   if (result.loading) {
     return <div>loading books...</div>
   }
@@ -25,7 +27,7 @@ const Books = (props) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {books.map((a) => (
+          {books && books.map((a) => (
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>{a.author}</td>
